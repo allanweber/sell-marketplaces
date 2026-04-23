@@ -3,7 +3,7 @@ module.exports = {
   experimental: {
     externalDir: true,
   },
-  transpilePackages: ["@repo/ui"],
+  transpilePackages: ["@sell-items/ui"],
   turbopack: {
     resolveAlias: {
       "react-native": "react-native-web",

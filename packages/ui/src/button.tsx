@@ -22,7 +22,6 @@ export function Button({ text, onClick }: ButtonProps) {
 const styles = StyleSheet.create({
   button: {
     maxWidth: 200,
-    textAlign: "center",
     borderRadius: 10,
     paddingTop: 14,
     paddingBottom: 14,
@@ -33,5 +32,6 @@ const styles = StyleSheet.create({
   },
   text: {
     color: "white",
+    textAlign: "center",
   },
 });

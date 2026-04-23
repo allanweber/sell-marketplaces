@@ -1,5 +1,5 @@
 {
-  "name": "@repo/ui",
+  "name": "@sell-items/ui",
   "version": "0.0.0",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -9,7 +9,7 @@
     "clean": "rimraf dist"
   },
   "devDependencies": {
-    "@repo/typescript-config": "workspace:*",
+    "@sell-items/typescript-config": "workspace:*",
     "@types/react": "~19.2.10",
     "rimraf": "^6.0.1",
     "tsup": "^8.0.1",

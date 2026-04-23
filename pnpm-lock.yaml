@@ -23,7 +23,7 @@ importers:
 
   apps/native:
     dependencies:
-      '@repo/ui':
+      '@sell-items/ui':
         specifier: workspace:*
         version: link:../../packages/ui
       expo:
@@ -72,7 +72,7 @@ importers:
 
   apps/web:
     dependencies:
-      '@repo/ui':
+      '@sell-items/ui':
         specifier: workspace:*
         version: link:../../packages/ui
       next:
@@ -88,7 +88,7 @@ importers:
         specifier: ^0.21.0
         version: 0.21.2(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
     devDependencies:
-      '@repo/typescript-config':
+      '@sell-items/typescript-config':
         specifier: workspace:*
         version: link:../../packages/typescript-config
       '@types/node':
@@ -115,25 +115,25 @@ importers:
 
   apps/worker:
     devDependencies:
-      '@repo/typescript-config':
+      '@sell-items/typescript-config':
         specifier: workspace:*
         version: link:../../packages/typescript-config
 
   packages/connectors:
     devDependencies:
-      '@repo/typescript-config':
+      '@sell-items/typescript-config':
         specifier: workspace:*
         version: link:../typescript-config
 
   packages/db:
     devDependencies:
-      '@repo/typescript-config':
+      '@sell-items/typescript-config':
         specifier: workspace:*
         version: link:../typescript-config
 
   packages/domain:
     devDependencies:
-      '@repo/typescript-config':
+      '@sell-items/typescript-config':
         specifier: workspace:*
         version: link:../typescript-config
 
@@ -148,7 +148,7 @@ importers:
         specifier: 0.83.2
         version: 0.83.2(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.0)
     devDependencies:
-      '@repo/typescript-config':
+      '@sell-items/typescript-config':
         specifier: workspace:*
         version: link:../typescript-config
       '@types/react':

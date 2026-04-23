@@ -93,7 +93,7 @@ GPT-5.2
 ### Debug Log References
 
 - Turbo starter scaffold was created in `turbo-scaffold/` as a temporary workspace (repo root was not empty), then merged into repo root to preserve existing BMAD folders. The temporary folder can be safely removed after merge.
-- Verified web dev server starts (`next dev --webpack`) and web build succeeds via `pnpm build` (turbo builds `@repo/ui` first).
+- Verified web dev server starts and web build succeeds via `pnpm build` (turbo builds `@sell-items/ui` first).
 - Verified Expo starts Metro in web preview mode (`expo start --web`) and waits on `http://localhost:8081`.
 
 ### Completion Notes List
