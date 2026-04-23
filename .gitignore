@@ -1,0 +1,55 @@
+# Monorepo (Turbo + pnpm)
+node_modules/
+.turbo/
+.pnpm-store/
+.pnp
+.pnp.js
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# OS / editor
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+
+# Env files (keep .env.example committed)
+.env
+.env.*
+!.env.example
+!.env.sample
+
+# Next.js / React (incl. Turbopack)
+.next/
+out/
+build/
+coverage/
+.vercel
+.swc/
+.turbopack/
+**/.turbopack/
+
+# Expo / React Native
+**/.expo/
+web-build/
+dist/
+apps/*/android/
+apps/*/ios/
+*.keystore
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+
+# TypeScript
+*.tsbuildinfo
+
+# Misc secrets / certs
+*.pem
+

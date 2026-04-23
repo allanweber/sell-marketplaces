@@ -114,14 +114,17 @@ bmad-retrospective
 
 ```mermaid
 flowchart TD
-  A["5.1 Create story<br/>bmad-create-story create"] --> B["5.2 Validate story<br/>bmad-create-story validate"]
-  B --> C["5.3 Dev story<br/>bmad-dev-story"]
-  C --> D["5.4 Code review<br/>bmad-code-review"]
+  A[bmad-create-story create] --> B[bmad-create-story validate]
+  B --> C[bmad-dev-story]
+  C --> D[bmad-code-review]
+
   D -->|changes requested| C
-  D -->|approved| E["(optional) 5.5 QA automation<br/>bmad-qa-generate-e2e-tests"]
-  E --> F["Repeat Phase 5 for next story"]
-  D --> F
-  F -->|epic complete| G["Phase 6 Retrospective<br/>bmad-retrospective"]
+  D -->|approved| E[bmad-qa-generate-e2e-tests (optional)]
+
+  D --> F[next story]
+  E --> F
+
+  F -->|epic complete| G[bmad-retrospective]
 ```
 
 ## Phase 7 — when things change (anytime)

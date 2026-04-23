@@ -1,0 +1,20 @@
+{
+  "private": true,
+  "scripts": {
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "clean": "turbo run clean && rimraf node_modules",
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\" --ignore-path .gitignore"
+  },
+  "devDependencies": {
+    "prettier": "^3.1.1",
+    "rimraf": "^6.0.1",
+    "typescript": "5.9.2",
+    "turbo": "^2.9.6"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "name": "with-react-native-web",
+  "packageManager": "pnpm@10.21.0"
+}
