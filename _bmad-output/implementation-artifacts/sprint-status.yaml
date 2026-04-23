@@ -1,0 +1,112 @@
+# generated: 2026-04-23T09:34:21.655993+00:00
+# last_updated: 2026-04-23T09:34:21.655993+00:00
+# project: sell-items
+# project_key: NOKEY
+# tracking_system: file-system
+# story_location: {project-root}/_bmad-output/implementation-artifacts
+
+# STATUS DEFINITIONS:
+# ==================
+# Epic Status:
+#   - backlog: Epic not yet started
+#   - in-progress: Epic actively being worked on
+#   - done: All stories in epic completed
+#
+# Epic Status Transitions:
+#   - backlog → in-progress: Automatically when first story is created (via create-story)
+#   - in-progress → done: Manually when all stories reach 'done' status
+#
+# Story Status:
+#   - backlog: Story only exists in epic file
+#   - ready-for-dev: Story file created in stories folder
+#   - in-progress: Developer actively working on implementation
+#   - review: Ready for code review (via Dev's code-review workflow)
+#   - done: Story completed
+#
+# Retrospective Status:
+#   - optional: Can be completed but not required
+#   - done: Retrospective has been completed
+#
+# WORKFLOW NOTES:
+# ===============
+# - Epic transitions to 'in-progress' automatically when first story is created
+# - Stories can be worked in parallel if team capacity allows
+# - Developer typically creates next story after previous one is 'done' to incorporate learnings
+# - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
+
+generated: "2026-04-23T09:34:21.655993+00:00"
+last_updated: "2026-04-23T09:41:02.000000+00:00"
+project: sell-items
+project_key: NOKEY
+tracking_system: file-system
+story_location: "{project-root}/_bmad-output/implementation-artifacts"
+
+development_status:
+  # All epics, stories, and retrospectives in order
+  epic-1: in-progress
+  1-1-set-up-initial-project-from-the-starter-template: ready-for-dev
+  1-2-sign-up-and-sign-in-with-email-password-web-mobile: backlog
+  1-3-social-login-post-mvp-candidate: backlog
+  1-4-profile-basics-and-defaults-locale-listing-defaults: backlog
+  1-5-marketplace-directory-for-my-country-pack-capability-honest: backlog
+  1-6-connect-and-disconnect-marketplace-accounts-connected-channels: backlog
+  1-7-app-shell-navigation-inventory-inbox-new-item-settings-ops: backlog
+  1-8-delete-all-account-deletion-request-gdpr-aligned: backlog
+  epic-1-retrospective: optional
+  epic-2: backlog
+  2-1-start-a-new-item-with-photos-first-creation: backlog
+  2-2-edit-core-item-fields-title-description-price-category-condition: backlog
+  2-3-manage-item-photos-add-remove-reorder: backlog
+  2-4-selling-logistics-pickup-shipping-location-area: backlog
+  2-5-duplicate-an-item-to-speed-up-similar-listings: backlog
+  2-6-archive-and-unarchive-items: backlog
+  2-7-item-lifecycle-state-tracking-draft-ready-active-pending-sold: backlog
+  2-8-resume-an-interrupted-listing-flow: backlog
+  epic-2-retrospective: optional
+  epic-3: backlog
+  3-1-choose-marketplaces-per-item-with-capability-honest-defaults: backlog
+  3-2-pre-publish-validation-per-selected-marketplace-actionable-missing-fields: backlog
+  3-3-enqueue-publishing-and-show-durable-per-channel-outcomes-async-worker: backlog
+  3-4-assisted-publishing-for-facebook-marketplace-listing-package-deep-links-resumable-checklist: backlog
+  3-5-confirm-assisted-posting-by-pasting-the-external-listing-url: backlog
+  3-6-retry-failed-publish-safely-with-idempotency-and-audit-trail: backlog
+  3-7-view-publish-history-audit-trail-per-item-and-marketplace: backlog
+  epic-3-retrospective: optional
+  epic-4: backlog
+  4-1-unified-inventory-list-cockpit-home: backlog
+  4-2-item-cockpit-card-shows-per-marketplace-channel-rows-status-links: backlog
+  4-3-single-best-next-action-per-item-channel-from-the-cockpit: backlog
+  4-4-inventory-filtering-and-sorting-state-marketplace-action-needed: backlog
+  4-5-cockpit-kpi-header-with-tap-to-filter-quick-actions: backlog
+  epic-4-retrospective: optional
+  epic-5: backlog
+  5-1-conversation-list-for-connected-marketplaces-unified-inbox: backlog
+  5-2-thread-view-with-item-channel-context: backlog
+  5-3-reply-to-buyers-for-connected-channels-with-delivery-states: backlog
+  5-4-assisted-unsupported-inbox-behavior-is-capability-honest-link-out: backlog
+  5-5-reply-templates-snippets-for-faster-buyer-communication: backlog
+  epic-5-retrospective: optional
+  epic-6: backlog
+  6-1-mark-item-as-pending-pickup-or-sold: backlog
+  6-2-generate-per-marketplace-close-out-checklist: backlog
+  6-3-execute-close-out-actions-for-connected-marketplaces-best-effort-async: backlog
+  6-4-guided-close-out-for-assisted-marketplaces-link-out-return-to-cockpit: backlog
+  6-5-warn-when-channels-are-still-active-after-marking-sold: backlog
+  epic-6-retrospective: optional
+  epic-7: backlog
+  7-1-risky-category-detection-and-pre-publish-gating-optional-review-flow: backlog
+  7-2-request-human-in-the-loop-review-and-track-review-status: backlog
+  7-3-reviewer-workflow-approve-reject-with-reason-and-required-changes: backlog
+  7-4-troubleshooting-panel-for-publish-sync-inbox-failures-actionable-recovery: backlog
+  7-5-standardized-error-envelope-and-traceid-surfaced-across-user-facing-failures: backlog
+  7-6-export-a-support-bundle-for-escalation: backlog
+  epic-7-retrospective: optional
+  epic-8: backlog
+  8-1-notification-preferences-high-signal-only: backlog
+  8-2-publish-outcome-notifications: backlog
+  8-3-connected-inbox-message-notifications: backlog
+  8-4-assisted-finish-posting-reminders: backlog
+  8-5-ops-dashboard-for-connector-health-and-backlog: backlog
+  8-6-inspect-failures-and-audit-records-normalized-errors-traceid: backlog
+  8-7-degrade-disable-a-connector-kill-switch-safely: backlog
+  epic-8-retrospective: optional

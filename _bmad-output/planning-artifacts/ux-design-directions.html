@@ -1,0 +1,784 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>sell-items — UX Design Directions</title>
+    <style>
+      :root{
+        /* Calm-neutral + blue foundation */
+        --bg:#f6f7fb;
+        --panel:#ffffff;
+        --panel-2:#f1f4fb;
+        --text:#0f172a;
+        --muted:#64748b;
+        --border:#e2e8f0;
+        --shadow: 0 12px 30px rgba(2,6,23,.08);
+        --shadow-2: 0 8px 18px rgba(2,6,23,.07);
+        --blue:#2563eb;
+        --blue-2:#1d4ed8;
+        --success:#16a34a;
+        --warn:#f59e0b;
+        --error:#ef4444;
+        --chip-bg:#eef2ff;
+        --radius:16px;
+        --radius-sm:12px;
+        --space:8px;
+        --font: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      }
+      [data-theme="dark"]{
+        --bg:#0b1220;
+        --panel:#101a2e;
+        --panel-2:#0f172a;
+        --text:#e5e7eb;
+        --muted:#9ca3af;
+        --border:rgba(148,163,184,.18);
+        --shadow: 0 18px 42px rgba(0,0,0,.35);
+        --shadow-2: 0 12px 24px rgba(0,0,0,.28);
+        --chip-bg: rgba(37,99,235,.12);
+      }
+
+      *{ box-sizing:border-box; }
+      body{
+        margin:0;
+        font-family:var(--font);
+        background: radial-gradient(1200px 700px at 20% -10%, rgba(37,99,235,.10), transparent 55%),
+                    radial-gradient(900px 600px at 90% 10%, rgba(245,158,11,.10), transparent 50%),
+                    var(--bg);
+        color:var(--text);
+      }
+      a{ color:var(--blue); text-decoration:none; }
+      .wrap{
+        max-width: 1220px;
+        margin: 0 auto;
+        padding: 24px;
+      }
+      header{
+        display:flex;
+        gap:16px;
+        align-items:flex-start;
+        justify-content:space-between;
+        margin-bottom: 18px;
+      }
+      .title{
+        display:flex;
+        flex-direction:column;
+        gap:4px;
+      }
+      h1{
+        margin:0;
+        font-size:18px;
+        letter-spacing:.2px;
+      }
+      .subtitle{
+        margin:0;
+        color:var(--muted);
+        font-size:13px;
+        line-height:1.4;
+        max-width: 70ch;
+      }
+      .controls{
+        display:flex;
+        flex-wrap:wrap;
+        gap:10px;
+        justify-content:flex-end;
+        align-items:center;
+      }
+      .pill{
+        border:1px solid var(--border);
+        background: rgba(255,255,255,.55);
+        backdrop-filter: blur(6px);
+        color:var(--text);
+        padding:10px 12px;
+        border-radius: 999px;
+        box-shadow: 0 6px 14px rgba(2,6,23,.06);
+        display:flex;
+        align-items:center;
+        gap:10px;
+        font-size:12px;
+      }
+      [data-theme="dark"] .pill{
+        background: rgba(16,26,46,.6);
+      }
+      .btn{
+        appearance:none;
+        border:1px solid var(--border);
+        background: var(--panel);
+        color:var(--text);
+        padding:10px 12px;
+        border-radius: 999px;
+        font-size:12px;
+        cursor:pointer;
+        box-shadow: var(--shadow-2);
+      }
+      .btn:hover{ border-color: rgba(37,99,235,.35); }
+      .btn.primary{
+        border-color: rgba(37,99,235,.35);
+        background: linear-gradient(180deg, rgba(37,99,235,.14), rgba(37,99,235,.08));
+      }
+      .grid{
+        display:grid;
+        grid-template-columns: 1fr;
+        gap: 14px;
+      }
+      .dirTabs{
+        display:flex;
+        flex-wrap:wrap;
+        gap:10px;
+      }
+      .dir{
+        border:1px solid var(--border);
+        background: var(--panel);
+        padding: 10px 12px;
+        border-radius: 12px;
+        cursor:pointer;
+        font-size: 12px;
+        box-shadow: var(--shadow-2);
+      }
+      .dir[aria-selected="true"]{
+        border-color: rgba(37,99,235,.45);
+        background: linear-gradient(180deg, rgba(37,99,235,.16), rgba(37,99,235,.08));
+      }
+      .board{
+        border:1px solid var(--border);
+        border-radius: var(--radius);
+        background: rgba(255,255,255,.55);
+        backdrop-filter: blur(6px);
+        box-shadow: var(--shadow);
+        overflow:hidden;
+      }
+      [data-theme="dark"] .board{ background: rgba(16,26,46,.62); }
+      .boardHd{
+        display:flex;
+        align-items:center;
+        justify-content:space-between;
+        padding: 14px 16px;
+        border-bottom:1px solid var(--border);
+      }
+      .boardHd .meta{
+        display:flex; flex-direction:column; gap:3px;
+      }
+      .boardHd .meta strong{ font-size:13px; }
+      .boardHd .meta span{ font-size:12px; color:var(--muted); }
+      .boardBody{
+        display:grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 14px;
+        padding: 14px;
+      }
+      @media (max-width: 980px){
+        .boardBody{ grid-template-columns: 1fr; }
+        header{ flex-direction:column; align-items:stretch; }
+        .controls{ justify-content:flex-start; }
+      }
+      /* Device */
+      .device{
+        border:1px solid var(--border);
+        background: var(--panel);
+        border-radius: 22px;
+        box-shadow: var(--shadow-2);
+        overflow:hidden;
+        min-height: 520px;
+        display:flex;
+        flex-direction:column;
+      }
+      .device .top{
+        padding: 14px 14px 10px;
+        border-bottom:1px solid var(--border);
+        display:flex;
+        align-items:flex-start;
+        justify-content:space-between;
+        gap: 10px;
+      }
+      .device .top .left{
+        display:flex;
+        flex-direction:column;
+        gap: 4px;
+      }
+      .device .top .left .h{
+        font-weight:700;
+        font-size: 14px;
+        letter-spacing:.2px;
+      }
+      .device .top .left .s{
+        font-size:12px;
+        color:var(--muted);
+      }
+      .device .top .actions{
+        display:flex;
+        gap: 8px;
+        align-items:center;
+      }
+      .iconBtn{
+        width:34px; height:34px;
+        border-radius: 12px;
+        border:1px solid var(--border);
+        background: linear-gradient(180deg, rgba(37,99,235,.10), rgba(37,99,235,.05));
+        color:var(--blue);
+        display:grid;
+        place-items:center;
+        cursor:pointer;
+      }
+      .content{
+        padding: 12px 14px 86px;
+        display:flex;
+        flex-direction:column;
+        gap: 10px;
+        flex:1;
+        background: linear-gradient(180deg, rgba(37,99,235,.06), transparent 120px);
+      }
+      [data-theme="dark"] .content{
+        background: linear-gradient(180deg, rgba(37,99,235,.12), transparent 160px);
+      }
+      .card{
+        border:1px solid var(--border);
+        background: var(--panel);
+        border-radius: var(--radius);
+        padding: 12px;
+        box-shadow: 0 10px 22px rgba(2,6,23,.06);
+      }
+      .row{
+        display:flex; align-items:center; justify-content:space-between;
+        gap:10px;
+      }
+      .row .title{
+        font-weight:700;
+        font-size:13px;
+      }
+      .row .sub{
+        font-size:12px; color:var(--muted);
+      }
+      .chips{
+        display:flex; flex-wrap:wrap; gap:6px;
+        margin-top: 10px;
+      }
+      .chip{
+        font-size:11px;
+        padding:6px 8px;
+        border-radius: 999px;
+        border:1px solid var(--border);
+        background: var(--chip-bg);
+        display:inline-flex;
+        align-items:center;
+        gap: 6px;
+        color: var(--text);
+      }
+      .dot{
+        width:8px; height:8px; border-radius:50%;
+        background: var(--muted);
+      }
+      .dot.success{ background: var(--success); }
+      .dot.warn{ background: var(--warn); }
+      .dot.error{ background: var(--error); }
+      .dot.info{ background: var(--blue); }
+      .progress{
+        height:8px;
+        border-radius: 999px;
+        background: rgba(148,163,184,.25);
+        overflow:hidden;
+        border: 1px solid rgba(148,163,184,.25);
+        margin-top: 10px;
+      }
+      [data-theme="dark"] .progress{
+        background: rgba(148,163,184,.18);
+        border-color: rgba(148,163,184,.18);
+      }
+      .progress > span{
+        display:block;
+        height:100%;
+        width: 56%;
+        border-radius: 999px;
+        background: linear-gradient(90deg, var(--blue), rgba(37,99,235,.55));
+      }
+      .stack{
+        display:flex;
+        flex-direction:column;
+        gap:8px;
+      }
+      .mini{
+        display:flex;
+        gap:10px;
+        align-items:flex-start;
+      }
+      .avatar{
+        width:34px; height:34px;
+        border-radius: 12px;
+        background: linear-gradient(180deg, rgba(37,99,235,.18), rgba(37,99,235,.08));
+        border:1px solid rgba(37,99,235,.25);
+        flex: 0 0 auto;
+      }
+      .msg{
+        flex:1;
+        border:1px solid var(--border);
+        background: var(--panel);
+        border-radius: 14px;
+        padding: 10px;
+      }
+      .msg .m1{ font-size:12px; color: var(--muted); }
+      .msg .m2{ margin-top:4px; font-size:13px; }
+      .tabs{
+        position:relative;
+      }
+      .bottomTabs{
+        position:absolute;
+        left:0; right:0; bottom:0;
+        border-top:1px solid var(--border);
+        background: rgba(255,255,255,.72);
+        backdrop-filter: blur(8px);
+        display:flex;
+        justify-content:space-around;
+        padding: 10px 10px 12px;
+      }
+      [data-theme="dark"] .bottomTabs{
+        background: rgba(16,26,46,.72);
+      }
+      .tab{
+        display:flex;
+        flex-direction:column;
+        align-items:center;
+        gap:6px;
+        font-size:11px;
+        color: var(--muted);
+        min-width: 56px;
+      }
+      .tab .ico{
+        width:34px; height:28px;
+        border-radius: 12px;
+        border:1px solid var(--border);
+        display:grid;
+        place-items:center;
+        background: var(--panel);
+      }
+      .tab.active{
+        color: var(--blue);
+        font-weight:700;
+      }
+      .tab.active .ico{
+        border-color: rgba(37,99,235,.35);
+        background: linear-gradient(180deg, rgba(37,99,235,.14), rgba(37,99,235,.06));
+      }
+
+      /* Variation helpers */
+      .dense .content{ padding: 10px 12px 78px; gap: 8px; }
+      .dense .card{ padding: 10px; border-radius: 14px; }
+      .dense .row .title{ font-size:12px; }
+      .dense .row .sub{ font-size:11px; }
+      .dense .chip{ padding:5px 7px; }
+      .softChips .chip{ background: rgba(148,163,184,.12); }
+      .boldChips .chip{ border-color: rgba(37,99,235,.25); }
+      .boldChips .chip.warn{ background: rgba(245,158,11,.14); border-color: rgba(245,158,11,.25); }
+      .boldChips .chip.success{ background: rgba(22,163,74,.14); border-color: rgba(22,163,74,.25); }
+      .boldChips .chip.error{ background: rgba(239,68,68,.12); border-color: rgba(239,68,68,.25); }
+      .boldChips .chip.info{ background: rgba(37,99,235,.14); border-color: rgba(37,99,235,.25); }
+
+      .kpi{
+        display:grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+      .stat{
+        border:1px solid var(--border);
+        border-radius: 14px;
+        padding: 10px;
+        background: var(--panel);
+      }
+      .stat strong{ font-size:13px; }
+      .stat div{ font-size:12px; color: var(--muted); margin-top:4px; }
+      .hint{
+        font-size:12px;
+        color: var(--muted);
+        padding: 12px 16px;
+        border-top:1px dashed var(--border);
+        background: rgba(148,163,184,.06);
+      }
+      .legend{
+        display:flex; flex-wrap:wrap; gap:8px;
+        padding: 0 16px 14px;
+      }
+      .legend .chip{ background: transparent; }
+    </style>
+  </head>
+  <body data-theme="light">
+    <div class="wrap">
+      <header>
+        <div class="title">
+          <h1>sell-items — UX Design Directions</h1>
+          <p class="subtitle">
+            6 visual directions exploring an <strong>airy</strong> cockpit with <strong>bottom tabs</strong>,
+            <strong>card-like channel rows</strong>, and <strong>stronger status chips + progress</strong>.
+            Use the selector to compare directions. Toggle theme to preview light/dark.
+          </p>
+        </div>
+        <div class="controls">
+          <div class="pill">
+            <span style="color:var(--muted)">Theme</span>
+            <button class="btn" id="themeBtn" type="button">Light</button>
+          </div>
+          <div class="pill">
+            <span style="color:var(--muted)">View</span>
+            <button class="btn primary" id="viewAll" type="button">All screens</button>
+            <button class="btn" id="viewInv" type="button">Inventory</button>
+            <button class="btn" id="viewItem" type="button">Item</button>
+            <button class="btn" id="viewInbox" type="button">Inbox</button>
+          </div>
+        </div>
+      </header>
+
+      <div class="grid">
+        <div class="dirTabs" role="tablist" aria-label="Design direction selector">
+          <button class="dir" role="tab" aria-selected="true" data-dir="1">Direction 1 — Calm Airy Cards</button>
+          <button class="dir" role="tab" aria-selected="false" data-dir="2">Direction 2 — KPI Cockpit</button>
+          <button class="dir" role="tab" aria-selected="false" data-dir="3">Direction 3 — Progress-First</button>
+          <button class="dir" role="tab" aria-selected="false" data-dir="4">Direction 4 — Inbox-First</button>
+          <button class="dir" role="tab" aria-selected="false" data-dir="5">Direction 5 — Dense(ish) Airy</button>
+          <button class="dir" role="tab" aria-selected="false" data-dir="6">Direction 6 — “Next Action” Chips</button>
+        </div>
+
+        <section class="board" id="board">
+          <div class="boardHd">
+            <div class="meta">
+              <strong id="dirName">Direction 1 — Calm Airy Cards</strong>
+              <span id="dirDesc">Minimal noise; channel rows feel like calm cards with clear status chips.</span>
+            </div>
+            <div class="pill" style="gap:8px">
+              <span style="color:var(--muted)">Status legend</span>
+              <span class="chip info"><span class="dot info"></span>Publishing</span>
+              <span class="chip success"><span class="dot success"></span>Posted</span>
+              <span class="chip warn"><span class="dot warn"></span>Action needed</span>
+              <span class="chip error"><span class="dot error"></span>Failed</span>
+            </div>
+          </div>
+          <div class="boardBody" id="screens">
+            <!-- Inventory -->
+            <div class="device tabs" data-screen="inventory">
+              <div class="top">
+                <div class="left">
+                  <div class="h">Inventory</div>
+                  <div class="s">2 items need action · NL pack</div>
+                </div>
+                <div class="actions">
+                  <div class="iconBtn" title="Search">⌕</div>
+                  <div class="iconBtn" title="New Item">＋</div>
+                </div>
+              </div>
+              <div class="content">
+                <div class="card">
+                  <div class="row">
+                    <div>
+                      <div class="title">IKEA armchair · grey</div>
+                      <div class="sub">€45 · Pickup · Draft saved → publishing</div>
+                    </div>
+                    <div class="chip info"><span class="dot info"></span>Auto-publishing</div>
+                  </div>
+                  <div class="progress"><span style="width:62%"></span></div>
+                  <div class="chips">
+                    <span class="chip success"><span class="dot success"></span>Marktplaats: Posted</span>
+                    <span class="chip warn"><span class="dot warn"></span>Facebook: Finish posting</span>
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="row">
+                    <div>
+                      <div class="title">Coffee table · oak</div>
+                      <div class="sub">€60 · Delivery optional</div>
+                    </div>
+                    <div class="chip warn"><span class="dot warn"></span>Action needed</div>
+                  </div>
+                  <div class="chips">
+                    <span class="chip warn"><span class="dot warn"></span>Marktplaats: Missing category</span>
+                    <span class="chip"><span class="dot"></span>Facebook: Not started</span>
+                  </div>
+                </div>
+                <div class="card" style="background:linear-gradient(180deg, rgba(37,99,235,.08), rgba(37,99,235,.03)); border-color: rgba(37,99,235,.16);">
+                  <div class="row">
+                    <div>
+                      <div class="title">Quick win</div>
+                      <div class="sub">Post your next item everywhere in under 2 minutes.</div>
+                    </div>
+                    <div class="chip info"><span class="dot info"></span>Start</div>
+                  </div>
+                </div>
+              </div>
+              <div class="bottomTabs">
+                <div class="tab active"><div class="ico">▦</div><div>Inventory</div></div>
+                <div class="tab"><div class="ico">✉</div><div>Inbox</div></div>
+                <div class="tab"><div class="ico">＋</div><div>New</div></div>
+                <div class="tab"><div class="ico">⚙</div><div>Ops</div></div>
+              </div>
+            </div>
+
+            <!-- Item detail -->
+            <div class="device tabs" data-screen="item">
+              <div class="top">
+                <div class="left">
+                  <div class="h">Item</div>
+                  <div class="s">IKEA armchair · grey</div>
+                </div>
+                <div class="actions">
+                  <div class="iconBtn" title="Edit">✎</div>
+                  <div class="iconBtn" title="Share">↗</div>
+                </div>
+              </div>
+              <div class="content">
+                <div class="card">
+                  <div class="row">
+                    <div>
+                      <div class="title">Status</div>
+                      <div class="sub">Auto-publishing started after save</div>
+                    </div>
+                    <span class="chip info"><span class="dot info"></span>Publishing</span>
+                  </div>
+                  <div class="progress"><span style="width:72%"></span></div>
+                </div>
+                <div class="card">
+                  <div class="row">
+                    <div>
+                      <div class="title">Marketplaces</div>
+                      <div class="sub">Connected vs Assisted (honest boundaries)</div>
+                    </div>
+                    <span class="chip"><span class="dot"></span>2 selected</span>
+                  </div>
+                  <div class="chips">
+                    <span class="chip success"><span class="dot success"></span>Marktplaats (Connected): Posted</span>
+                    <span class="chip warn"><span class="dot warn"></span>Facebook (Assisted): Finish posting</span>
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="row">
+                    <div>
+                      <div class="title">Next action</div>
+                      <div class="sub">Finish Facebook posting (2 steps)</div>
+                    </div>
+                    <span class="chip warn"><span class="dot warn"></span>Resume</span>
+                  </div>
+                </div>
+              </div>
+              <div class="bottomTabs">
+                <div class="tab"><div class="ico">▦</div><div>Inventory</div></div>
+                <div class="tab"><div class="ico">✉</div><div>Inbox</div></div>
+                <div class="tab active"><div class="ico">＋</div><div>New</div></div>
+                <div class="tab"><div class="ico">⚙</div><div>Ops</div></div>
+              </div>
+            </div>
+
+            <!-- Inbox -->
+            <div class="device tabs" data-screen="inbox">
+              <div class="top">
+                <div class="left">
+                  <div class="h">Inbox</div>
+                  <div class="s">Connected channels · last synced 2 min ago</div>
+                </div>
+                <div class="actions">
+                  <div class="iconBtn" title="Refresh">⟳</div>
+                  <div class="iconBtn" title="Filters">⛭</div>
+                </div>
+              </div>
+              <div class="content">
+                <div class="card">
+                  <div class="row">
+                    <div>
+                      <div class="title">IKEA armchair</div>
+                      <div class="sub">Marktplaats · Buyer asks “Is pickup today ok?”</div>
+                    </div>
+                    <span class="chip info"><span class="dot info"></span>Reply</span>
+                  </div>
+                  <div class="chips">
+                    <span class="chip"><span class="dot"></span>Template: Pickup time</span>
+                    <span class="chip"><span class="dot"></span>View item</span>
+                  </div>
+                </div>
+                <div class="mini">
+                  <div class="avatar"></div>
+                  <div class="msg">
+                    <div class="m1">You · draft reply</div>
+                    <div class="m2">“Yes — I can do 19:30 near De Pijp. Works?”</div>
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="row">
+                    <div>
+                      <div class="title">Facebook assisted conversations</div>
+                      <div class="sub">Open in Facebook (keeps item context)</div>
+                    </div>
+                    <span class="chip warn"><span class="dot warn"></span>Link out</span>
+                  </div>
+                </div>
+              </div>
+              <div class="bottomTabs">
+                <div class="tab"><div class="ico">▦</div><div>Inventory</div></div>
+                <div class="tab active"><div class="ico">✉</div><div>Inbox</div></div>
+                <div class="tab"><div class="ico">＋</div><div>New</div></div>
+                <div class="tab"><div class="ico">⚙</div><div>Ops</div></div>
+              </div>
+            </div>
+          </div>
+          <div class="hint" id="hint">
+            Tip: Switch “View” to focus on one screen across directions. The goal is to choose a direction that feels <strong>calm</strong>, <strong>empowering</strong>, and makes success obvious (posted everywhere + reply from one cockpit).
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <script>
+      const state = {
+        dir: 1,
+        view: "all",
+        theme: "light",
+      };
+
+      const dirData = {
+        1: {
+          name: "Direction 1 — Calm Airy Cards",
+          desc: "Minimal noise; channel rows feel like calm cards with clear status chips.",
+          classes: ["boldChips"]
+        },
+        2: {
+          name: "Direction 2 — KPI Cockpit",
+          desc: "Adds a small, calm KPI strip to reinforce ‘success’ and reduce anxiety.",
+          classes: ["boldChips","kpiCockpit"]
+        },
+        3: {
+          name: "Direction 3 — Progress-First",
+          desc: "Progress indicators become the primary visual language for publishing states.",
+          classes: ["boldChips","progressFirst"]
+        },
+        4: {
+          name: "Direction 4 — Inbox-First",
+          desc: "Inbox cards carry more item context to enable faster triage and reply.",
+          classes: ["boldChips","inboxFirst"]
+        },
+        5: {
+          name: "Direction 5 — Dense(ish) Airy",
+          desc: "Still airy, but more scan-dense for power sessions and ‘sell-a-lot’ mode.",
+          classes: ["boldChips","dense"]
+        },
+        6: {
+          name: "Direction 6 — “Next Action” Chips",
+          desc: "Next actions are elevated into explicit chips for fewer clicks and faster flow.",
+          classes: ["boldChips","nextAction"]
+        }
+      };
+
+      const dirButtons = Array.from(document.querySelectorAll(".dir"));
+      const dirName = document.getElementById("dirName");
+      const dirDesc = document.getElementById("dirDesc");
+      const screens = document.getElementById("screens");
+      const themeBtn = document.getElementById("themeBtn");
+      const body = document.body;
+
+      const viewButtons = {
+        all: document.getElementById("viewAll"),
+        inventory: document.getElementById("viewInv"),
+        item: document.getElementById("viewItem"),
+        inbox: document.getElementById("viewInbox"),
+      };
+
+      function setActiveView(view){
+        state.view = view;
+        Object.entries(viewButtons).forEach(([k,btn]) => {
+          btn.classList.toggle("primary", k === view);
+        });
+        Array.from(screens.querySelectorAll(".device")).forEach(dev => {
+          const s = dev.getAttribute("data-screen");
+          dev.style.display = (view === "all" || view === s) ? "flex" : "none";
+        });
+      }
+
+      function applyDirection(dir){
+        state.dir = dir;
+        dirButtons.forEach(b => b.setAttribute("aria-selected", String(b.dataset.dir == dir)));
+        dirName.textContent = dirData[dir].name;
+        dirDesc.textContent = dirData[dir].desc;
+
+        // reset variation classes
+        screens.querySelectorAll(".device").forEach(dev => {
+          dev.classList.remove("dense");
+        });
+        body.classList.remove("kpiCockpit","progressFirst","inboxFirst","nextAction");
+
+        // apply direction-level classes
+        const classes = dirData[dir].classes || [];
+        screens.querySelectorAll(".device").forEach(dev => {
+          if(classes.includes("dense")) dev.classList.add("dense");
+        });
+        classes.forEach(c => body.classList.add(c));
+
+        // Modify mock content for special directions (minimal JS mutation)
+        // KPI Cockpit: add small KPI strip to Inventory header content
+        const invContent = screens.querySelector('[data-screen="inventory"] .content');
+        const existingKpi = invContent.querySelector('[data-kpi="true"]');
+        if(existingKpi) existingKpi.remove();
+        if(body.classList.contains("kpiCockpit")){
+          const kpi = document.createElement("div");
+          kpi.className = "card";
+          kpi.setAttribute("data-kpi","true");
+          kpi.innerHTML = `
+            <div class="kpi">
+              <div class="stat"><strong>2</strong><div>channels posted</div></div>
+              <div class="stat"><strong>1</strong><div>finish assisted</div></div>
+            </div>
+          `;
+          invContent.prepend(kpi);
+        }
+
+        // Progress-first: increase progress bar prominence by adjusting widths
+        screens.querySelectorAll(".progress > span").forEach(span => {
+          if(body.classList.contains("progressFirst")){
+            span.style.width = span.style.width || "68%";
+          }
+        });
+
+        // Inbox-first: add extra item context chip to first inbox card
+        const firstInboxCard = screens.querySelector('[data-screen="inbox"] .card');
+        const ctx = firstInboxCard?.querySelector('[data-ctx="true"]');
+        if(ctx) ctx.remove();
+        if(body.classList.contains("inboxFirst") && firstInboxCard){
+          const chips = firstInboxCard.querySelector(".chips");
+          if(chips){
+            const extra = document.createElement("span");
+            extra.className = "chip";
+            extra.setAttribute("data-ctx","true");
+            extra.innerHTML = `<span class="dot"></span>Item: €45 · pickup`;
+            chips.prepend(extra);
+          }
+        }
+
+        // Next-action: elevate next actions to explicit chips
+        screens.querySelectorAll('[data-screen="inventory"] .card').forEach(card => {
+          const chips = card.querySelector(".chips");
+          if(!chips) return;
+          const existing = chips.querySelector('[data-na="true"]');
+          if(existing) existing.remove();
+          if(body.classList.contains("nextAction")){
+            const na = document.createElement("span");
+            na.className = "chip warn";
+            na.setAttribute("data-na","true");
+            na.innerHTML = `<span class="dot warn"></span>Next: Finish FB`;
+            chips.appendChild(na);
+          }
+        });
+      }
+
+      function toggleTheme(){
+        state.theme = state.theme === "light" ? "dark" : "light";
+        body.setAttribute("data-theme", state.theme);
+        themeBtn.textContent = state.theme === "light" ? "Light" : "Dark";
+      }
+
+      dirButtons.forEach(btn => {
+        btn.addEventListener("click", () => applyDirection(Number(btn.dataset.dir)));
+      });
+
+      Object.entries(viewButtons).forEach(([k,btn]) => {
+        btn.addEventListener("click", () => setActiveView(k));
+      });
+
+      themeBtn.addEventListener("click", toggleTheme);
+
+      // init
+      applyDirection(1);
+      setActiveView("all");
+    </script>
+  </body>
+</html>
+
