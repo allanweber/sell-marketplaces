@@ -33,6 +33,7 @@ coverage/
 .swc/
 .turbopack/
 **/.turbopack/
+**/.data/
 
 # Expo / React Native
 **/.expo/

@@ -336,6 +336,13 @@ So that I can access my inventory and connected channels across devices.
 
 **Parity rule:** Implement **web + mobile** in this same story (shared API contract; platform UIs may ship sequentially but both must be completed before story is “Done”).
 
+**Persistence rule:** This story is not “Done” until auth is **durable** (Postgres-backed) and the DB baseline exists.
+
+**Given** the architecture specifies PostgreSQL + Drizzle + drizzle-kit with schema centralized in `packages/db`  
+**When** this story is completed  
+**Then** the repo includes a Drizzle schema baseline (tables) and drizzle-kit migration setup under `packages/db`  
+**And** initial migrations exist and can be applied in development consistently
+
 **Given** I am not signed in
 **When** I sign up with email/password
 **Then** my account is created and I am signed in successfully on that device
@@ -344,6 +351,84 @@ So that I can access my inventory and connected channels across devices.
 **Given** I enter invalid credentials
 **When** I attempt to sign in
 **Then** I see a clear, user-safe error message (no sensitive detail leakage)
+**And** the server returns a standard error envelope that includes a `traceId`
+
+#### Story 1.2.1: Transactional email sender (Resend) for auth OTP messages
+
+As a developer,
+I want a server-side email sender using Resend,
+So that the system can send OTPs and other auth-related emails reliably.
+
+**Acceptance Criteria:**
+
+**Given** Resend is the selected email provider
+**When** the email sender is configured
+**Then** the system can send transactional emails via Resend using:
+- `RESEND_API_KEY`
+- `RESEND_FROM="sellitems@allanweber.dev"`
+
+**Given** an email is sent
+**When** an operator checks the Resend dashboard
+**Then** they can view the sent email details and delivery events/logs for troubleshooting
+
+**Given** email sending is triggered from auth flows
+**When** an OTP email is sent
+**Then** the implementation does not block the request path by awaiting email sending (avoid timing attacks)
+
+#### Story 1.2.2: Email activation with OTP (Better Auth Email OTP) (web + mobile)
+
+As a seller,
+I want to verify my email address using an OTP code,
+So that my account is activated and protected against email typos and abuse.
+
+**Acceptance Criteria:**
+
+**Parity rule:** Implement **web + mobile** in this same story (shared API contract; platform UIs may ship sequentially but both must be completed before story is “Done”).
+
+**Given** I sign up with email/password
+**When** my account is created
+**Then** the system sends an email OTP verification code to my email
+**And** the email is sent via Resend from `sellitems@allanweber.dev`
+
+**Given** my email is not verified
+**When** I attempt to sign in
+**Then** I am blocked from completing sign-in until verification is complete
+**And** I see a clear, user-safe message explaining that verification is required (no sensitive detail leakage)
+
+**Given** I received an OTP code
+**When** I submit the OTP code
+**Then** my email is marked verified (`emailVerified=true`)
+**And** I can successfully sign in afterwards
+
+**Given** I did not receive the code or it expired
+**When** I request a new OTP
+**Then** a new OTP is sent (rate-limited)
+**And** the UI explains the wait/limit calmly
+**And** the response includes a `traceId` using the standard envelope
+
+#### Story 1.2.3: Forgot password + reset password using email OTP (Resend) (web + mobile)
+
+As a seller,
+I want to reset my password using an OTP code sent to my email,
+So that I can regain access without support.
+
+**Acceptance Criteria:**
+
+**Parity rule:** Implement **web + mobile** in this same story (shared API contract; platform UIs may ship sequentially but both must be completed before story is “Done”).
+
+**Given** I forgot my password
+**When** I request a password reset with my email
+**Then** the system sends a password reset OTP to that email (if it exists)
+**And** the response is user-safe and does not reveal whether the email is registered (anti-enumeration)
+
+**Given** I received the reset OTP
+**When** I submit the OTP and a new password
+**Then** my password is reset successfully
+**And** I can sign in with the new password
+
+**Given** I submit an invalid or expired OTP
+**When** I attempt to reset my password
+**Then** I see a clear, user-safe error message
 **And** the server returns a standard error envelope that includes a `traceId`
 
 ### Story 1.3: Social login (post-MVP candidate)
@@ -371,7 +456,115 @@ So that I can get started faster without creating a password.
 **Then** I can retry or choose a different sign-in method
 **And** failures return a standard error envelope that includes a `traceId`
 
-### Story 1.4: Profile basics & defaults (locale + listing defaults)
+### Story 1.4: Design system foundation (tokens + theming) (web + mobile)
+
+As a seller,
+I want the app to feel consistent, calm, and trustworthy across web and mobile,
+So that every screen looks and behaves like the same product.
+
+**Acceptance Criteria:**
+
+**Parity rule:** Implement **web + mobile** in this same story (shared tokens; platform-specific wiring is allowed but both must be completed before story is “Done”).
+
+**Given** the UX design requirements specify a cross-platform token system (colors, semantic status colors, typography scale, spacing 8pt, radius, elevation)  
+**When** the design system foundation is implemented  
+**Then** shared tokens exist as a single source of truth and cover at minimum:
+- base neutrals + surfaces
+- trust-forward blue primary
+- semantic/status colors (success/warn/error/info)
+- typography scale (sizes/weights)
+- spacing scale (8pt increments)
+- radius and elevation/shadow tokens
+
+**Given** the app uses semantic/status colors  
+**When** status is conveyed in UI  
+**Then** meaning is **never encoded by color alone** (icon + text required wherever status is shown)
+
+**Given** the web app is running  
+**When** a screen renders using the design system  
+**Then** the theme consumes the shared tokens (e.g., via CSS variables and/or a theme provider) and core surfaces/typography match the token values
+
+**Given** the native app is running  
+**When** a screen renders using the design system  
+**Then** the theme consumes the shared tokens (e.g., via a theme object mapped into the RN UI layer) and core surfaces/typography match the token values
+
+### Story 1.5: UI primitives built on tokens (web + mobile)
+
+As a developer,
+I want a small set of reusable UI primitives built on the tokens,
+So that feature screens don’t invent one-off styles and the UI stays consistent.
+
+**Acceptance Criteria:**
+
+**Parity rule:** Implement **web + mobile** in this same story (shared API/design intent; platform implementations may differ).
+
+**Given** the design system tokens exist  
+**When** UI primitives are implemented  
+**Then** the project provides at minimum:
+- `Button` (variants: primary/secondary/ghost; disabled + loading states)
+- `Text` (typography variants)
+- `TextField`/`Input` (label, helper, error states)
+- `Card`/`Surface`
+- `Chip`/`Badge`
+- `Icon` wrapper (size + color semantics)
+- `Spinner`/`Progress`
+- `Alert`/`InlineError`
+- `Divider`
+- `ListRow` (tap/press states)
+
+**Given** a primitive is focused/hovered/pressed/disabled/loading  
+**When** it renders  
+**Then** its interaction states are clearly defined and consistent across web and mobile
+
+**Given** a form field has a validation error  
+**When** the error is displayed  
+**Then** the pattern is consistent (message placement, semantics/ARIA on web, accessible labels on mobile) and uses tokenized spacing/typography
+
+### Story 1.6: Navigation + layout conventions wired (tabs baseline + responsive web layout scaffold)
+
+As a seller,
+I want navigation and layout to feel predictable across platforms,
+So that I can move around quickly without re-learning each screen.
+
+**Acceptance Criteria:**
+
+**Parity rule:** Implement **web + mobile** in this same story (navigation style conventions + shared layout rules).
+
+**Given** I am signed in  
+**When** I use the bottom-tab navigation  
+**Then** active/inactive states, spacing, icon sizing, and touch targets are consistent with the design tokens  
+**And** touch targets meet the 44×44px minimum (or equivalent on web)
+
+**Given** I use the web app on different screen widths  
+**When** the viewport changes  
+**Then** the responsive layout rules are implemented as a scaffold:
+- mobile-first single-pane
+- tablet touch-first
+- desktop ≥1024px prepares for two-pane layouts with persistent selection state (where applicable)
+
+### Story 1.7: Apply design system to existing auth + settings surfaces (adoption sweep) (web + mobile)
+
+As a seller,
+I want the sign-in and early settings screens to feel polished and consistent,
+So that I trust the product from the first interaction.
+
+**Acceptance Criteria:**
+
+**Parity rule:** Implement **web + mobile** in this same story.
+
+**Given** the sign-in and sign-up screens exist  
+**When** this story is completed  
+**Then** those screens use the design tokens and primitives (spacing, typography, buttons, inputs, error states) with no ad-hoc styling
+
+**Given** the Settings/Profile (or early settings shell) exists  
+**When** this story is completed  
+**Then** it uses the design tokens and primitives consistently
+
+**Given** an auth error occurs (invalid credentials, unverified email, etc.)  
+**When** the UI displays the error  
+**Then** the message is calm and user-safe, follows the standardized error pattern, and is accessible (focus/announcement on web; readable labels on mobile)
+
+### Story 1.8: Profile basics & defaults (locale + listing defaults)
 
 As a seller,
 I want to set my basic profile and defaults,
@@ -390,7 +583,7 @@ So that creating listings is faster and consistent.
 **Then** changes persist and are reflected in future item creation flows
 **And** the save response includes a `traceId`
 
-### Story 1.5: Marketplace directory for my country pack (capability-honest)
+### Story 1.9: Marketplace directory for my country pack (capability-honest)
 
 As a seller,
 I want to see the marketplaces available in my country pack and what they support,
@@ -408,7 +601,7 @@ So that I can understand what actions are possible (Connected vs Assisted).
 **When** I view that marketplace in the directory
 **Then** I see its current operational status and the resulting capability limitations
 
-### Story 1.6: Connect and disconnect marketplace accounts (Connected channels)
+### Story 1.10: Connect and disconnect marketplace accounts (Connected channels)
 
 As a seller,
 I want to connect and disconnect marketplace accounts,
@@ -431,7 +624,7 @@ So that I can publish and manage my listings where Connected is supported.
 **Then** the account is disconnected and tokens are revoked/invalidated where possible
 **And** the UI removes Connected-only actions for that marketplace
 
-### Story 1.7: App shell navigation (Inventory, Inbox, New Item, Settings/Ops)
+### Story 1.11: App shell navigation (Inventory, Inbox, New Item, Settings/Ops)
 
 As a seller,
 I want consistent primary navigation,
@@ -444,7 +637,7 @@ So that I can quickly move between the cockpit, inbox, item creation, and settin
 **Then** I can reach Inventory (home), Inbox, New Item, and Settings/Ops
 **And** the current section is clearly indicated
 
-### Story 1.8: “Delete all” account deletion request (GDPR-aligned)
+### Story 1.12: “Delete all” account deletion request (GDPR-aligned)
 
 As a seller,
 I want to request deletion of my account and all my data,

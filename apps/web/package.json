@@ -6,22 +6,35 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "eslint .",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "dependencies": {
+    "@better-auth/drizzle-adapter": "^1.6.8",
+    "@better-auth/expo": "^1.6.8",
+    "@sell-items/db": "workspace:*",
+    "@sell-items/domain": "workspace:*",
     "@sell-items/ui": "workspace:*",
+    "better-auth": "^1.6.8",
+    "drizzle-orm": "^0.45.2",
     "next": "16.2.0",
+    "pg": "^8.20.0",
     "react": "19.2.0",
     "react-dom": "19.2.0",
-    "react-native-web": "^0.21.0"
+    "react-native-web": "^0.21.0",
+    "zod": "^4.3.6"
   },
   "devDependencies": {
+    "@eslint/compat": "^2.0.5",
+    "@eslint/eslintrc": "^3.3.5",
     "@sell-items/typescript-config": "workspace:*",
-    "@types/node": "^20.10.6",
+    "@types/node": "^22.19.17",
+    "@types/pg": "^8.20.0",
     "@types/react": "~19.2.10",
     "@types/react-dom": "~19.2.0",
     "babel-plugin-react-native-web": "^0.19.10",
-    "eslint": "^9.0.0",
+    "cross-env": "^10.1.0",
+    "eslint": "^9.39.4",
     "eslint-config-next": "16.2.0",
     "typescript": "5.9.2"
   }

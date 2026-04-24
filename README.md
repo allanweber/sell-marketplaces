@@ -16,6 +16,25 @@ Monorepo scaffolded from Turborepo’s `with-react-native-web` example (Next.js 
 pnpm install
 ```
 
+## Environment variables
+
+Copy the example env file and set real secrets/URLs:
+
+```bash
+cp .env.example .env.local
+```
+
+Minimum required for auth + DB:
+
+- `BETTER_AUTH_SECRET`
+- `BETTER_AUTH_URL`
+- `DATABASE_URL`
+
+For native (Expo):
+
+- `EXPO_PUBLIC_WEB_BASE_URL`
+- `EXPO_PUBLIC_APP_SCHEME`
+
 ## Run (developer)
 
 - **Run everything (Turborepo)**
@@ -46,3 +65,16 @@ Expo will start Metro and wait on `http://localhost:8081`.
 pnpm build
 ```
 
+## Database Setup
+
+Make sure you have a PostgreSQL database set up in docker.
+
+```bash
+docker run --name sellitems -e POSTGRES_PASSWORD=postgres -e POSTGRES_USER=postgres -e POSTGRES_DB=sellitems -p 5435:5432 -d postgres
+```
+
+Apply the schema/migrations:
+
+```bash
+pnpm db:migrate
+```
