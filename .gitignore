@@ -35,6 +35,10 @@ coverage/
 **/.turbopack/
 **/.data/
 
+# Playwright
+playwright-report/
+test-results/
+
 # Expo / React Native
 **/.expo/
 web-build/
