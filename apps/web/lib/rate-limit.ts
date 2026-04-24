@@ -14,9 +14,11 @@ const store = new Map<string, Counter>();
 const MAX_KEYS = 10_000;
 
 function cleanup(now: number) {
+  const keysToDelete: string[] = [];
   store.forEach((v, k) => {
-    if (v.resetAt <= now) store.delete(k);
+    if (v.resetAt <= now) keysToDelete.push(k);
   });
+  for (const k of keysToDelete) store.delete(k);
 }
 
 function getClientIp(request: Request): string {
