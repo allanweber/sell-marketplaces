@@ -9,12 +9,14 @@
     "ios": "expo run:ios",
     "web": "expo start --web",
     "eject": "expo eject",
+    "lint": "eslint .",
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "dependencies": {
     "@better-auth/expo": "^1.6.8",
     "@sell-items/domain": "workspace:*",
     "@sell-items/ui": "workspace:*",
+    "@tanstack/react-query": "^5.100.1",
     "better-auth": "^1.6.8",
     "expo": "^55.0.4",
     "expo-constants": "~55.0.7",
@@ -33,6 +35,8 @@
   },
   "devDependencies": {
     "@types/react": "~19.2.10",
+    "@typescript-eslint/parser": "^8.59.0",
+    "eslint": "^9.39.4",
     "typescript": "5.9.2"
   },
   "expo": {

@@ -2,27 +2,26 @@ import { router } from "expo-router";
 import { useState } from "react";
 import { Button, Text, TextInput, View } from "react-native";
 
-import { authClient } from "@/lib/auth-client";
-import { extractTraceId } from "@/lib/trace-id";
+import { getBetterAuthResultTraceId, useNativeSignInMutation } from "@/queries/auth";
 
 export default function SignInScreen() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [isPending, setIsPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [traceId, setTraceId] = useState<string | null>(null);
 
+  const signIn = useNativeSignInMutation({ email, password });
+
   async function onSubmit() {
-    if (isPending) return;
-    setIsPending(true);
+    if (signIn.isPending) return;
     setError(null);
     setTraceId(null);
 
     try {
-      const result = await authClient.signIn.email({ email, password });
-      if (result.error) {
-        setError(result.error.message ?? "Invalid email or password.");
-        setTraceId(extractTraceId(result));
+      const result = await signIn.mutateAsync();
+      if ((result as any)?.error) {
+        setError((result as any).error.message ?? "Invalid email or password.");
+        setTraceId(getBetterAuthResultTraceId(result));
         return;
       }
 
@@ -30,7 +29,7 @@ export default function SignInScreen() {
     } catch {
       setError("Could not sign in. Please check your connection and try again.");
     } finally {
-      setIsPending(false);
+      // state lives in React Query mutation
     }
   }
 
@@ -65,7 +64,7 @@ export default function SignInScreen() {
         }}
       />
 
-      <Button title={isPending ? "Signing in…" : "Sign in"} onPress={onSubmit} disabled={isPending} />
+      <Button title={signIn.isPending ? "Signing in…" : "Sign in"} onPress={onSubmit} disabled={signIn.isPending} />
 
       <Button title="Create account" onPress={() => router.push("/sign-up")} />
 

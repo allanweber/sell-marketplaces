@@ -2,28 +2,27 @@ import { router } from "expo-router";
 import { useState } from "react";
 import { Button, Text, TextInput, View } from "react-native";
 
-import { authClient } from "@/lib/auth-client";
-import { extractTraceId } from "@/lib/trace-id";
+import { getBetterAuthResultTraceId, useNativeSignUpMutation } from "@/queries/auth";
 
 export default function SignUpScreen() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [isPending, setIsPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [traceId, setTraceId] = useState<string | null>(null);
 
+  const signUp = useNativeSignUpMutation({ name, email, password });
+
   async function onSubmit() {
-    if (isPending) return;
-    setIsPending(true);
+    if (signUp.isPending) return;
     setError(null);
     setTraceId(null);
 
     try {
-      const result = await authClient.signUp.email({ name, email, password });
-      if (result.error) {
-        setError(result.error.message ?? "Could not create account. Please try again.");
-        setTraceId(extractTraceId(result));
+      const result = await signUp.mutateAsync();
+      if ((result as any)?.error) {
+        setError((result as any).error.message ?? "Could not create account. Please try again.");
+        setTraceId(getBetterAuthResultTraceId(result));
         return;
       }
 
@@ -31,7 +30,7 @@ export default function SignUpScreen() {
     } catch {
       setError("Could not create account. Please check your connection and try again.");
     } finally {
-      setIsPending(false);
+      // state lives in React Query mutation
     }
   }
 
@@ -79,9 +78,9 @@ export default function SignUpScreen() {
       />
 
       <Button
-        title={isPending ? "Creating…" : "Create account"}
+        title={signUp.isPending ? "Creating…" : "Create account"}
         onPress={onSubmit}
-        disabled={isPending}
+        disabled={signUp.isPending}
       />
 
       <Button title="I already have an account" onPress={() => router.push("/sign-in")} />

@@ -6,8 +6,8 @@ function getBaseURL(): string {
   const raw = process.env.EXPO_PUBLIC_WEB_BASE_URL ?? "http://localhost:3000";
   try {
     // Validate it is a real absolute URL.
-    // eslint-disable-next-line no-new
-    new URL(raw);
+    const _url = new URL(raw);
+    void _url;
     return raw;
   } catch {
     return "http://localhost:3000";

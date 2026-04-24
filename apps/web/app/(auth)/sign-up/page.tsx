@@ -4,41 +4,29 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { type SubmitEventHandler, useState } from "react";
 
-import { generateTraceId } from "@sell-items/domain";
-import { TRACE_HEADER } from "@/lib/trace";
+import { useSignUpMutation } from "@/queries/auth";
 
 export default function SignUpPage() {
   const router = useRouter();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [isPending, setIsPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [traceId, setTraceId] = useState<string | null>(null);
 
+  const signUp = useSignUpMutation({ name, email, password });
+
   const onSubmit: SubmitEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
-    if (isPending) return;
-    setIsPending(true);
+    if (signUp.isPending) return;
     setError(null);
-    const newTraceId = generateTraceId();
-    setTraceId(newTraceId);
+    setTraceId(null);
 
     try {
-      const res = await fetch("/api/auth/sign-up", {
-        method: "POST",
-        headers: {
-          "content-type": "application/json",
-          [TRACE_HEADER]: newTraceId,
-        },
-        body: JSON.stringify({ name, email, password }),
-      });
-
-      const json = await res.json().catch(() => null);
-
-      if (!res.ok) {
-        setError(json?.error?.message ?? "Could not create account.");
-        setTraceId(json?.traceId ?? newTraceId);
+      const result = await signUp.mutateAsync();
+      if (!result.ok) {
+        setError(result.errorMessage ?? "Could not create account.");
+        setTraceId(result.traceId);
         return;
       }
 
@@ -47,7 +35,7 @@ export default function SignUpPage() {
     } catch {
       setError("Could not create account. Please check your connection and try again.");
     } finally {
-      setIsPending(false);
+      // state lives in React Query mutation
     }
   };
 
@@ -87,8 +75,8 @@ export default function SignUpPage() {
           />
         </label>
 
-        <button type="submit" disabled={isPending}>
-          {isPending ? "Creating…" : "Create account"}
+        <button type="submit" disabled={signUp.isPending}>
+          {signUp.isPending ? "Creating…" : "Create account"}
         </button>
 
         {error ? (

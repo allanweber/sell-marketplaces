@@ -2,37 +2,32 @@ import { router } from "expo-router";
 import { useState } from "react";
 import { Button, Text, View } from "react-native";
 
-import { apiFetch } from "@/lib/api";
 import { authClient } from "@/lib/auth-client";
+import { useNativeSignOutMutation } from "@/queries/auth";
 
 export default function Home() {
   const { data: session, isPending } = authClient.useSession();
-  const [isSigningOut, setIsSigningOut] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [traceId, setTraceId] = useState<string | null>(null);
 
+  const signOut = useNativeSignOutMutation();
+
   async function onSignOut() {
-    if (isSigningOut) return;
-    setIsSigningOut(true);
+    if (signOut.isPending) return;
     setError(null);
     setTraceId(null);
     try {
-      const res = await apiFetch("/api/auth/sign-out", { method: "POST" });
-      const json = await res.json().catch(() => null);
-      if (!res.ok) {
-        setError(json?.error?.message ?? "Could not sign out. Please try again.");
-        setTraceId(json?.traceId ?? res.headers.get("x-trace-id"));
+      const result = await signOut.mutateAsync();
+      if (!result.ok) {
+        setError(result.errorMessage);
+        setTraceId(result.traceId ?? null);
         return;
       }
-
-      // Clear local session/cookie state owned by the Better Auth Expo plugin.
-      await (authClient as any).signOut?.();
-
       router.replace("/sign-in");
     } catch {
       setError("Could not sign out. Please check your connection and try again.");
     } finally {
-      setIsSigningOut(false);
+      // state lives in React Query mutation
     }
   }
 
@@ -60,7 +55,11 @@ export default function Home() {
       <Text>
         Signed in as <Text style={{ fontWeight: "700" }}>{session.user.email}</Text>
       </Text>
-      <Button title={isSigningOut ? "Signing out…" : "Sign out"} onPress={onSignOut} disabled={isSigningOut} />
+      <Button
+        title={signOut.isPending ? "Signing out…" : "Sign out"}
+        onPress={onSignOut}
+        disabled={signOut.isPending}
+      />
       {error ? (
         <View style={{ gap: 6 }}>
           <Text style={{ color: "#b91c1c" }}>{error}</Text>

@@ -149,6 +149,9 @@ npx create-turbo@latest -e with-react-native-web
 - **Server state / data fetching**: TanStack Query
   - Inventory, item detail, inbox views use query caching + background refetch to keep “cockpit” fresh.
   - Mutations update durable per-item/per-channel statuses (optimistic updates only where safe).
+  - **Rule (required)**: Do **not** call `fetch()` directly inside React components (`*.tsx`). All client API calls must go through TanStack Query query/mutation functions that call shared API modules.
+  - **Allowed `fetch` locations**: shared API modules only (e.g. `apps/web/lib/api-client.ts`, `apps/native/lib/api.ts`), where trace headers / auth cookie forwarding / origin policy can be enforced consistently.
+  - **Folder rule (required)**: Each app has a `queries/` folder and all TanStack Query hooks live under `queries/**`. Components must import hooks from `queries/**` (no inline `useQuery`/`useMutation` hook definitions in components).
 - **Client/UI state**: Zustand
   - Filters/sorts, selected item/conversation (two-pane web), draft form UI state, and ephemeral UX flags.
 - **Offline-first drafts**

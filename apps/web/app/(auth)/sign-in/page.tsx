@@ -4,40 +4,28 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { type SubmitEventHandler, useState } from "react";
 
-import { generateTraceId } from "@sell-items/domain";
-import { TRACE_HEADER } from "@/lib/trace";
+import { useSignInMutation } from "@/queries/auth";
 
 export default function SignInPage() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [isPending, setIsPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [traceId, setTraceId] = useState<string | null>(null);
 
+  const signIn = useSignInMutation({ email, password });
+
   const onSubmit: SubmitEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
-    if (isPending) return;
-    setIsPending(true);
+    if (signIn.isPending) return;
     setError(null);
-    const newTraceId = generateTraceId();
-    setTraceId(newTraceId);
+    setTraceId(null);
 
     try {
-      const res = await fetch("/api/auth/sign-in", {
-        method: "POST",
-        headers: {
-          "content-type": "application/json",
-          [TRACE_HEADER]: newTraceId,
-        },
-        body: JSON.stringify({ email, password }),
-      });
-
-      const json = await res.json().catch(() => null);
-
-      if (!res.ok) {
-        setError(json?.error?.message ?? "Could not sign in.");
-        setTraceId(json?.traceId ?? newTraceId);
+      const result = await signIn.mutateAsync();
+      if (!result.ok) {
+        setError(result.errorMessage ?? "Could not sign in.");
+        setTraceId(result.traceId);
         return;
       }
 
@@ -46,7 +34,7 @@ export default function SignInPage() {
     } catch {
       setError("Could not sign in. Please check your connection and try again.");
     } finally {
-      setIsPending(false);
+      // state lives in React Query mutation
     }
   };
 
@@ -76,8 +64,8 @@ export default function SignInPage() {
           />
         </label>
 
-        <button type="submit" disabled={isPending}>
-          {isPending ? "Signing in…" : "Sign in"}
+        <button type="submit" disabled={signIn.isPending}>
+          {signIn.isPending ? "Signing in…" : "Sign in"}
         </button>
 
         {error ? (

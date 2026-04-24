@@ -1,7 +1,15 @@
-import { Stack } from "expo-router"
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { Stack } from "expo-router";
+import { useState } from "react";
 
 const AppLayout = () => {
-  return <Stack />
-}
+  const [queryClient] = useState(() => new QueryClient());
 
-export default AppLayout
+  return (
+    <QueryClientProvider client={queryClient}>
+      <Stack />
+    </QueryClientProvider>
+  );
+};
+
+export default AppLayout;

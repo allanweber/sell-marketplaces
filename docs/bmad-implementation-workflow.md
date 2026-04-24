@@ -7,6 +7,12 @@ This is the **simple, end-to-end sequence flow** of the `bmad-*` workflows to ru
 - Planning outputs: `_bmad-output/planning-artifacts/`
 - Implementation outputs: `_bmad-output/implementation-artifacts/` (includes `sprint-status.yaml`)
 
+## Non-negotiable engineering decisions (this repo)
+
+- **Client API calls**: Use **TanStack React Query** for all API calls from React components (web + native).
+- **No component-level `fetch`**: Do **not** call `fetch()` inside React components (`*.tsx`). `fetch` is allowed only inside shared API modules (e.g. `apps/web/lib/api-client.ts`, `apps/native/lib/api.ts`) that are invoked via React Query query/mutation functions.
+- **Folder structure rule**: Each app must have a `queries/` folder. All React Query hooks (`useQuery`, `useMutation`) live in `queries/**` and components import hooks from there (no inline `useQuery`/`useMutation` definitions in components).
+
 ## Phase 0 — (optional) brownfield / catch-up
 
 If you’re joining an existing codebase or your docs are stale:
