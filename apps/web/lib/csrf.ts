@@ -32,12 +32,10 @@ function allowedOrigins(): string[] {
   const unique = Array.from(new Set(envList));
   if (unique.length) return unique;
 
+  // Production-like behavior: if `BETTER_AUTH_TRUSTED_ORIGINS` isn't set,
+  // only allow requests from the server's own configured origin.
   const base = expectedOrigin();
-  const dev =
-    isDev()
-      ? ["http://localhost:3000", "http://127.0.0.1:3000"]
-      : [];
-  return Array.from(new Set([...(base ? [base] : []), ...dev]));
+  return base ? [base] : [];
 }
 
 function matchesAllowedOrigin(actual: string, allowed: string): boolean {

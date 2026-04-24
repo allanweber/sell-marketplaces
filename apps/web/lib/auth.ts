@@ -17,15 +17,12 @@ function defaultTrustedOrigins(baseURL: string | undefined): string[] {
     .map((s) => s.trim())
     .filter(Boolean);
 
+  // Production-like behavior: **only** trust what is explicitly configured.
+  // - In all environments, `BETTER_AUTH_TRUSTED_ORIGINS` is the source of truth.
+  // - If it isn't provided, we fall back to trusting only our own `baseURL`.
   if (envList.length) return envList;
 
-  const webDev = ["http://localhost:3000", "http://127.0.0.1:3000"];
-  const expoDev = ["exp://*", "exp://**"];
-
-  return [
-    ...(baseURL ? [baseURL] : []),
-    ...(process.env.NODE_ENV === "development" ? [...webDev, ...expoDev] : []),
-  ];
+  return baseURL ? [baseURL] : [];
 }
 
 export const auth = betterAuth({

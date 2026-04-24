@@ -7,10 +7,10 @@
     "typecheck": "turbo run typecheck",
     "clean": "turbo run clean && rimraf node_modules",
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\" --ignore-path .gitignore",
-    "db:generate": "dotenv -e .env.local -- pnpm -C packages/db db:generate",
-    "db:push": "dotenv -e .env.local -- pnpm -C packages/db db:push",
+    "db:generate": "dotenv -e apps/web/.env.local -- pnpm -C packages/db db:generate",
+    "db:push": "dotenv -e apps/web/.env.local -- pnpm -C packages/db db:push",
     "db:migrate": "pnpm -C packages/db db:migrate",
-    "db:studio": "dotenv -e .env.local -- pnpm -C packages/db db:studio"
+    "db:studio": "dotenv -e apps/web/.env.local -- pnpm -C packages/db db:studio"
   },
   "devDependencies": {
     "dotenv-cli": "^11.0.0",

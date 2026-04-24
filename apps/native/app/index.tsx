@@ -2,8 +2,8 @@ import { router } from "expo-router";
 import { useState } from "react";
 import { Button, Text, View } from "react-native";
 
-import { authClient } from "@/lib/auth-client";
 import { apiFetch } from "@/lib/api";
+import { authClient } from "@/lib/auth-client";
 
 export default function Home() {
   const { data: session, isPending } = authClient.useSession();
