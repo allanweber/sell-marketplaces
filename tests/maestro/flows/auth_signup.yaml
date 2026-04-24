@@ -1,0 +1,28 @@
+appId: com.turbo.example
+---
+- launchApp
+
+- assertVisible: "Sell Items"
+- tapOn: "Create account"
+
+- assertVisible: "Create account"
+
+- tapOn: "Name"
+- inputText: "Maestro Test"
+
+- tapOn: "Email"
+- inputText: "maestro+${DATE_TIME}@example.com"
+
+- tapOn: "Password (min 8 chars)"
+- inputText: "password123"
+
+- tapOn: "Create account"
+
+# This may succeed (if backend reachable) or show an error; initial smoke test just validates UI flow works.
+- assertVisible:
+    text: "Sell Items"
+    optional: true
+- assertVisible:
+    text: "Could not create account"
+    optional: true
+

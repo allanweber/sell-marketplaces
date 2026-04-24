@@ -44,6 +44,8 @@ export default function SignInScreen() {
         autoCorrect={false}
         keyboardType="email-address"
         placeholder="Email"
+        accessibilityLabel="Email"
+        testID="auth.email"
         style={{
           borderWidth: 1,
           borderColor: "#d1d5db",
@@ -56,6 +58,8 @@ export default function SignInScreen() {
         onChangeText={setPassword}
         secureTextEntry
         placeholder="Password"
+        accessibilityLabel="Password"
+        testID="auth.password"
         style={{
           borderWidth: 1,
           borderColor: "#d1d5db",

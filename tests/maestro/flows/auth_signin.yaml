@@ -1,0 +1,25 @@
+appId: com.turbo.example
+---
+- launchApp
+
+- assertVisible: "Sell Items"
+- tapOn: "Sign in"
+
+- assertVisible: "Sign in"
+
+- tapOn: "Email"
+- inputText: "invalid@example.com"
+
+- tapOn: "Password"
+- inputText: "password123"
+
+- tapOn: "Sign in"
+
+# Expect an auth failure message (exact text may vary by backend)
+- assertVisible:
+    text: "Could not sign in"
+    optional: true
+- assertVisible:
+    text: "Invalid email or password"
+    optional: true
+

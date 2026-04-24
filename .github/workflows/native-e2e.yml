@@ -1,0 +1,122 @@
+name: native-e2e
+
+on:
+  workflow_dispatch: {}
+  pull_request:
+    paths:
+      - "apps/native/**"
+      - "packages/**"
+      - "tests/maestro/**"
+      - "pnpm-lock.yaml"
+      - "package.json"
+  push:
+    branches: ["main"]
+    paths:
+      - "apps/native/**"
+      - "packages/**"
+      - "tests/maestro/**"
+      - "pnpm-lock.yaml"
+      - "package.json"
+
+jobs:
+  android:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "pnpm"
+
+      - name: Install deps
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Maestro
+        run: |
+          curl -Ls "https://get.maestro.mobile.dev" | bash
+          echo "$HOME/.maestro/bin" >> $GITHUB_PATH
+
+      - name: Prebuild native (android)
+        working-directory: apps/native
+        run: pnpm exec expo prebuild --platform android --non-interactive
+
+      - name: Build + install app + run Maestro
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 34
+          arch: x86_64
+          target: google_apis
+          script: |
+            cd apps/native
+            pnpm exec expo run:android --non-interactive --no-install
+            cd ../..
+            maestro test tests/maestro/flows/auth_signin.yaml tests/maestro/flows/auth_signup.yaml
+
+      - name: Upload Maestro artifacts (if any)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: maestro-android
+          path: |
+            ~/.maestro/
+            apps/native/android/app/build/outputs/**/*.apk
+
+  ios:
+    runs-on: macos-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "pnpm"
+
+      - name: Install deps
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Maestro
+        run: |
+          curl -Ls "https://get.maestro.mobile.dev" | bash
+          echo "$HOME/.maestro/bin" >> $GITHUB_PATH
+
+      - name: Select Xcode
+        run: sudo xcode-select -s /Applications/Xcode.app
+
+      - name: Prebuild native (ios)
+        working-directory: apps/native
+        run: pnpm exec expo prebuild --platform ios --non-interactive
+
+      - name: Boot iOS simulator
+        run: |
+          xcrun simctl list devices available
+          DEVICE_ID=$(xcrun simctl list devices available | grep -m 1 -E "iPhone 1[45].*\\(" | sed -E 's/.*\\(([0-9A-F-]+)\\).*/\\1/')
+          echo "Using simulator: $DEVICE_ID"
+          xcrun simctl boot "$DEVICE_ID" || true
+          xcrun simctl bootstatus "$DEVICE_ID" -b
+
+      - name: Build + install app + run Maestro
+        run: |
+          cd apps/native
+          pnpm exec expo run:ios --non-interactive
+          cd ../..
+          maestro test tests/maestro/flows/auth_signin.yaml tests/maestro/flows/auth_signup.yaml
+
+      - name: Upload Maestro artifacts (if any)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: maestro-ios
+          path: |
+            ~/.maestro/
+

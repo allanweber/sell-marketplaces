@@ -6,6 +6,8 @@
     "lint": "turbo run lint",
     "typecheck": "turbo run typecheck",
     "test:e2e": "playwright test",
+    "e2e:native:android": "maestro test tests/maestro/flows/auth_signin.yaml tests/maestro/flows/auth_signup.yaml",
+    "e2e:native:ios": "maestro test tests/maestro/flows/auth_signin.yaml tests/maestro/flows/auth_signup.yaml",
     "clean": "turbo run clean && rimraf node_modules",
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\" --ignore-path .gitignore",
     "db:generate": "dotenv -e apps/web/.env.local -- pnpm -C packages/db db:generate",

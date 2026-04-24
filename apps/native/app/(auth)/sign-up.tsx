@@ -43,6 +43,8 @@ export default function SignUpScreen() {
         onChangeText={setName}
         autoCapitalize="words"
         placeholder="Name"
+        accessibilityLabel="Name"
+        testID="auth.name"
         style={{
           borderWidth: 1,
           borderColor: "#d1d5db",
@@ -57,6 +59,8 @@ export default function SignUpScreen() {
         autoCorrect={false}
         keyboardType="email-address"
         placeholder="Email"
+        accessibilityLabel="Email"
+        testID="auth.email"
         style={{
           borderWidth: 1,
           borderColor: "#d1d5db",
@@ -69,6 +73,8 @@ export default function SignUpScreen() {
         onChangeText={setPassword}
         secureTextEntry
         placeholder="Password (min 8 chars)"
+        accessibilityLabel="Password"
+        testID="auth.password"
         style={{
           borderWidth: 1,
           borderColor: "#d1d5db",
