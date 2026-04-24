@@ -10,7 +10,7 @@ export default function SignInScreen() {
   const [error, setError] = useState<string | null>(null);
   const [traceId, setTraceId] = useState<string | null>(null);
 
-  const signIn = useNativeSignInMutation({ email, password });
+  const signIn = useNativeSignInMutation();
 
   async function onSubmit() {
     if (signIn.isPending) return;
@@ -18,7 +18,7 @@ export default function SignInScreen() {
     setTraceId(null);
 
     try {
-      const result = await signIn.mutateAsync();
+      const result = await signIn.mutateAsync({ email, password });
       if ((result as any)?.error) {
         setError((result as any).error.message ?? "Invalid email or password.");
         setTraceId(getBetterAuthResultTraceId(result));

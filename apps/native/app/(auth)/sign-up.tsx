@@ -11,7 +11,7 @@ export default function SignUpScreen() {
   const [error, setError] = useState<string | null>(null);
   const [traceId, setTraceId] = useState<string | null>(null);
 
-  const signUp = useNativeSignUpMutation({ name, email, password });
+  const signUp = useNativeSignUpMutation();
 
   async function onSubmit() {
     if (signUp.isPending) return;
@@ -19,7 +19,7 @@ export default function SignUpScreen() {
     setTraceId(null);
 
     try {
-      const result = await signUp.mutateAsync();
+      const result = await signUp.mutateAsync({ name, email, password });
       if ((result as any)?.error) {
         setError((result as any).error.message ?? "Could not create account. Please try again.");
         setTraceId(getBetterAuthResultTraceId(result));

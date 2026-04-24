@@ -4,15 +4,15 @@ import { apiFetch } from "@/lib/api";
 import { authClient } from "@/lib/auth-client";
 import { extractTraceId } from "@/lib/trace-id";
 
-export function useNativeSignInMutation(args: { email: string; password: string }) {
+export function useNativeSignInMutation() {
   return useMutation({
-    mutationFn: async () => authClient.signIn.email(args),
+    mutationFn: async (args: { email: string; password: string }) => authClient.signIn.email(args),
   });
 }
 
-export function useNativeSignUpMutation(args: { name: string; email: string; password: string }) {
+export function useNativeSignUpMutation() {
   return useMutation({
-    mutationFn: async () => authClient.signUp.email(args),
+    mutationFn: async (args: { name: string; email: string; password: string }) => authClient.signUp.email(args),
   });
 }
 
