@@ -13,7 +13,7 @@ export default function SignInPage() {
   const [error, setError] = useState<string | null>(null);
   const [traceId, setTraceId] = useState<string | null>(null);
 
-  const signIn = useSignInMutation({ email, password });
+  const signIn = useSignInMutation();
 
   const onSubmit: SubmitEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
@@ -22,7 +22,7 @@ export default function SignInPage() {
     setTraceId(null);
 
     try {
-      const result = await signIn.mutateAsync();
+      const result = await signIn.mutateAsync({ email, password });
       if (!result.ok) {
         setError(result.errorMessage ?? "Could not sign in.");
         setTraceId(result.traceId);

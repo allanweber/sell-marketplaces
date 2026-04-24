@@ -2,15 +2,17 @@ import { useMutation } from "@tanstack/react-query";
 
 import { apiPostJson, apiPostNoBody } from "@/lib/api-client";
 
-export function useSignInMutation(args: { email: string; password: string }) {
+export function useSignInMutation() {
   return useMutation({
-    mutationFn: async () => apiPostJson<unknown>("/api/auth/sign-in", args),
+    mutationFn: async (args: { email: string; password: string }) =>
+      apiPostJson<unknown>("/api/auth/sign-in", args),
   });
 }
 
-export function useSignUpMutation(args: { name: string; email: string; password: string }) {
+export function useSignUpMutation() {
   return useMutation({
-    mutationFn: async () => apiPostJson<unknown>("/api/auth/sign-up", args),
+    mutationFn: async (args: { name: string; email: string; password: string }) =>
+      apiPostJson<unknown>("/api/auth/sign-up", args),
   });
 }
 

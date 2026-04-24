@@ -14,7 +14,7 @@ export default function SignUpPage() {
   const [error, setError] = useState<string | null>(null);
   const [traceId, setTraceId] = useState<string | null>(null);
 
-  const signUp = useSignUpMutation({ name, email, password });
+  const signUp = useSignUpMutation();
 
   const onSubmit: SubmitEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
@@ -23,7 +23,7 @@ export default function SignUpPage() {
     setTraceId(null);
 
     try {
-      const result = await signUp.mutateAsync();
+      const result = await signUp.mutateAsync({ name, email, password });
       if (!result.ok) {
         setError(result.errorMessage ?? "Could not create account.");
         setTraceId(result.traceId);
