@@ -11,9 +11,14 @@ function getSecret(): string {
   throw new Error("BETTER_AUTH_SECRET is required.");
 }
 
+function getDatabaseUrl(): string {
+  const value = process.env.DATABASE_URL;
+  if (value) return value;
+  throw new Error("DATABASE_URL is required.");
+}
+
 const pool = new Pool({
-  connectionString:
-    process.env.DATABASE_URL ?? "postgres://localhost:5432/sellitems",
+  connectionString: getDatabaseUrl(),
 });
 
 const db = drizzle(pool);
