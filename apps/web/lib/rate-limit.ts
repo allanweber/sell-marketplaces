@@ -51,11 +51,13 @@ export function requireRateLimit(
 
   const current = store.get(key);
   if (!current || current.resetAt <= now) {
+    // First request in a new window counts as 1 of `limit`.
     store.set(key, { count: 1, resetAt: now + config.windowMs });
     return null;
   }
 
-  if (current.count >= config.limit) {
+  const nextCount = current.count + 1;
+  if (nextCount > config.limit) {
     const retryAfterSeconds = Math.max(
       1,
       Math.ceil((current.resetAt - now) / 1000),
@@ -73,7 +75,7 @@ export function requireRateLimit(
     );
   }
 
-  current.count += 1;
+  current.count = nextCount;
   store.set(key, current);
   return null;
 }
