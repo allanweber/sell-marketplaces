@@ -58,7 +58,7 @@ test.describe("auth (web)", () => {
       await route.fulfill({
         status: 200,
         contentType: "application/json",
-        body: JSON.stringify(apiEnvelopeOk({})),
+        body: JSON.stringify(apiEnvelopeOk({}, "trace_signin_ok")),
         headers: { "x-trace-id": "trace_signin_ok" },
       });
     });

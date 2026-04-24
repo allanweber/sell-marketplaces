@@ -13,7 +13,7 @@ appId: com.turbo.example
 - tapOn: "Email"
 - inputText: "maestro+${DATE_TIME}@example.com"
 
-- tapOn: "Password (min 8 chars)"
+- tapOn: "Password"
 - inputText: "password123"
 
 - tapOn: "Create account"
